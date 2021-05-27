@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -26,47 +27,77 @@
   </style>
 </head>
 <body>
+  <script src="https://cdn.trackjs.com/agent/v3/latest/t.js"></script>
+<script>
+  window.TrackJS && TrackJS.install({ 
+    token: "35f51fb879f44574a9a29ac557b693b1"
+    // for more configuration options, see https://docs.trackjs.com
+  });
+</script>
+         
   <fieldset>
     <legend>Error Calculator</legend>
-    <input type="number" name="first-num" id="first-num" />
+    <input type="text" name="first-num" id="first-num" />
     <select name="operator" id="operator">
       <option>+</option>
       <option>-</option>
       <option>*</option>
       <option>/</option>
     </select>
-    <input type="number" name="second-num" id="second-num" />
+    <input type="text" name="second-num" id="second-num" />
     <button id="calculate">Calculate</button>
     <br />
     <output></output>
   </fieldset>
 
   <section id="error-btns">
-    <button>Console Log Demo</button>
-    <button>Console Error Demo</button>
-    <button>Console Dir</button>
-    <button>Console dirxml</button>
-    <button>Console Group Start</button>
-    <button>Console Group End</button>
-    <button>Console Table</button>
-    <button>Start Timer</button>
-    <button>End Timer</button>
-    <button>Console Trace</button>
-    <button>Trigger a Global Error</button>
+    <button id="log-demo">Console Log Demo</button>
+    <button id="error-demo">Console Error Demo</button>
+    <button id="console-dir">Console Dir</button>
+    <button id="dirxml">Console dirxml</button>
+    <button id="group-start">Console Group Start</button>
+    <button id="group-end">Console Group End</button>
+    <button id="console-table">Console Table</button>
+    <button id="start-timer">Start Timer</button>
+    <button id="end-timer">End Timer</button>
+    <button id="console-trace">Console Trace</button>
+    <button id="global-error">Trigger a Global Error</button>
   </section>
 
   <script>
+    class CalculatorError extends Error {
+      constructor(message) {
+        super(message); // (1)
+        this.name = "InputError"; // (2)
+      }
+    }
+
+
     let calculateBtn = document.querySelector('#calculate');
     calculateBtn.addEventListener('click', () => {
       let output = document.querySelector('output');
       let firstNum = document.querySelector('#first-num').value;
       let secondNum = document.querySelector('#second-num').value;
       let operator = document.querySelector('#operator').value;
-      output.innerHTML = eval(`${firstNum} ${operator} ${secondNum}`);
+      try{
+        output.innerHTML = eval(`${firstNum} ${operator} ${secondNum}`);
+      }catch(err){
+        try{
+          throw new CalculatorError("please make sure that your input is valid");
+        }catch(error){
+          //I don't know
+          alert(error.name+": "+error.message);
+        }
+      }finally{
+        console.log("At the very least, we attempted to make the calculation")
+      }
     });
 
     let errorBtns = Array.from(document.querySelectorAll('#error-btns > button'));
     // TODO - Make buttons functional
+    //Oops, I put it all in a different file, sorry.
+
   </script>
+  <script src="./console.js"></script>
 </body>
 </html>
